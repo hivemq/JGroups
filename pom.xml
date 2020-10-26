@@ -5,7 +5,7 @@
     <artifactId>jgroups</artifactId>
     <packaging>bundle</packaging>
     <name>JGroups</name>
-    <version>4.0.25.Final</version>
+    <version>4.0.26-SNAPSHOT</version>
     <url>http://www.jgroups.org</url>
 
     <properties>
@@ -70,39 +70,39 @@
         <maven>3.0.4</maven>
     </prerequisites>
 
-    <repositories>
-        <repository>
-            <id>jboss-public-repository-group</id>
-            <name>JBoss Public Maven Repository Group</name>
-            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>interval:120</updatePolicy>
-            </snapshots>
-        </repository>
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>jboss-public-repository-group</id>-->
+<!--            <name>JBoss Public Maven Repository Group</name>-->
+<!--            <url>https://repository.jboss.org/nexus/content/groups/public/</url>-->
+<!--            <layout>default</layout>-->
+<!--            <releases>-->
+<!--                <enabled>true</enabled>-->
+<!--                <updatePolicy>never</updatePolicy>-->
+<!--            </releases>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--                <updatePolicy>interval:120</updatePolicy>-->
+<!--            </snapshots>-->
+<!--        </repository>-->
 
-        <repository>
-            <id>jboss-snapshots-repository</id>
-            <name>JBoss Nexus snapshots repository</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>false</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>interval:120</updatePolicy>
-            </snapshots>
-        </repository>
+<!--        <repository>-->
+<!--            <id>jboss-snapshots-repository</id>-->
+<!--            <name>JBoss Nexus snapshots repository</name>-->
+<!--            <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>-->
+<!--            <layout>default</layout>-->
+<!--            <releases>-->
+<!--                <enabled>false</enabled>-->
+<!--                <updatePolicy>never</updatePolicy>-->
+<!--            </releases>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--                <updatePolicy>interval:120</updatePolicy>-->
+<!--            </snapshots>-->
+<!--        </repository>-->
 
 
-    </repositories>
+<!--    </repositories>-->
 
     <dependencies>
         <dependency>

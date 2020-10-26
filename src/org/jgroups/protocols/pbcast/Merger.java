@@ -659,6 +659,8 @@ public class Merger {
             Collection<Collection<Address>> sub_mbrships=new ArrayList<>();
             Set<Address>                    digest_membership=new HashSet<>(); // members as seen by the digests
 
+            log.error("MERGE: Merger > consolidateMergeData(merge_rsps=" + merge_rsps + ", subviews=" + subviews + ")");
+
             for(MergeData tmp_data: merge_rsps) {
                 View tmp_view=tmp_data.getView();
                 if(tmp_view != null) {
@@ -675,6 +677,8 @@ public class Merger {
                         digest_membership.add(entry.getMember());
             }
 
+            log.error("MERGE: Merger > consolidateMergeData 2: logical_time " + logical_time + ", sub_mbrships=" + sub_mbrships + ", digest_membership=" + digest_membership + ")");
+
             // remove all members from the new view for which we didn't get a digest, e.g. new view={A,B,C,D,E,F},
             // digest={A,C,D,F} --> new view={A,C,D,F}, digest={A,C,D,F}
             if(!digest_membership.isEmpty())
@@ -683,12 +687,16 @@ public class Merger {
 
             List<Address> merged_mbrs=gms.computeNewMembership(sub_mbrships);
 
+            log.error("MERGE: Merger > consolidateMergeData 3: logical_time " + logical_time + ", sub_mbrships=" + sub_mbrships + ", digest_membership=" + digest_membership + ", merged_mbrs=" + merged_mbrs + ")");
+
             // remove all members from the (future) MergeView that are not in the digest
             // Usually not needed, but a second line of defense in case the membership change policy above
             // computed the new view incorrectly, e.g. not removing dupes
             Set<Address> all_members=new HashSet<>();
             sub_mbrships.forEach(all_members::addAll);
             merged_mbrs.retainAll(all_members);
+
+            log.error("MERGE: Merger > consolidateMergeData 4: logical_time " + logical_time + ", sub_mbrships=" + sub_mbrships + ", digest_membership=" + digest_membership + ", merged_mbrs=" + merged_mbrs + ")");
 
             // the new coordinator is the first member of the consolidated & sorted membership list
             Address new_coord=merged_mbrs.isEmpty()? null : merged_mbrs.get(0);
@@ -704,11 +712,16 @@ public class Merger {
                     it.remove();
             }
 
+            log.error("MERGE: Merger > consolidateMergeData 4: logical_time " + logical_time + ", sub_mbrships=" + sub_mbrships + ", digest_membership=" + digest_membership + ", merged_mbrs=" + merged_mbrs + ", subviews=" + subviews + ")");
+
             // determine the new view; logical_time should be the highest view ID seen up to now plus 1
             MergeView new_view=new MergeView(new_coord, logical_time + 1, merged_mbrs, subviews);
 
+            log.error("MERGE: Merger > consolidateMergeData 5: new_view " + new_view + ")");
+
             // determine the new digest
             MutableDigest new_digest=consolidateDigests(new_view, merge_rsps);
+            log.error("MERGE: Merger > consolidateMergeData 6: new_digest " + new_digest + ")");
             if(new_digest == null || !new_digest.allSet())
                 return null;
 

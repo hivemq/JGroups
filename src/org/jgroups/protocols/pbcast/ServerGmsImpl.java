@@ -93,6 +93,7 @@ public abstract class ServerGmsImpl extends GmsImpl {
         long start=System.currentTimeMillis();
         sendLeaveMessage(coord, gms.local_addr);
         Address sender=leave_promise.getResult(gms.leave_timeout);
+        log.error("LEAVE: response coord=" + coord + ", sender=" + sender);
         if(!Objects.equals(coord, sender))
             return false;
 
@@ -105,6 +106,7 @@ public abstract class ServerGmsImpl extends GmsImpl {
     }
 
     protected void sendLeaveMessage(Address coord, Address mbr) {
+        log.error("LEAVE: sendLeaveMessage(coord=" + coord + ", mbr=" + mbr + ")");
         Message msg=new Message(coord).setFlag(Message.Flag.OOB)
           .putHeader(gms.getId(), new GMS.GmsHeader(GMS.GmsHeader.LEAVE_REQ, mbr));
         gms.getDownProtocol().down(msg);

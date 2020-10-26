@@ -2,6 +2,7 @@ package org.jgroups.protocols.pbcast;
 
 import org.jgroups.annotations.GuardedBy;
 import org.jgroups.logging.Log;
+import org.jgroups.logging.LogFactory;
 import org.jgroups.util.BoundedList;
 import org.jgroups.util.Util;
 
@@ -25,6 +26,8 @@ import java.util.stream.Collectors;
  * @since  4.0.5
  */
 public class ViewHandler<R> {
+    protected final Log        log= LogFactory.getLog(this.getClass());
+
     protected final Collection<R>         requests=new ConcurrentLinkedQueue<>();
     protected final Lock                  lock=new ReentrantLock();
     protected final AtomicInteger         count=new AtomicInteger(); // #threads adding to (and removing from) queue
@@ -60,8 +63,12 @@ public class ViewHandler<R> {
     public BiPredicate<R,R>        reqMatcher()                            {return req_matcher;}
 
     public ViewHandler<R> add(R req) {
-        if(_add(req))
+        if(_add(req)) {
+            if (req instanceof GmsImpl.Request && ((GmsImpl.Request) req).type == GMS.GmsHeader.LEAVE_REQ) {
+                log.error("LEAVE: ViewHandler > add(req=" + req + ")");
+            }
             process(requests);
+        }
         return this;
     }
 
@@ -265,12 +272,18 @@ public class ViewHandler<R> {
             Collection<R> removed=new ArrayList<>();
             Iterator<R> it=requests.iterator();
             R first_req=it.next();
+            if (first_req instanceof GmsImpl.Request && ((GmsImpl.Request) first_req).type == GMS.GmsHeader.LEAVE_REQ) {
+                log.error("LEAVE: ViewHandler > removeAndProcess(first_req=" + first_req + ")");
+            }
             removed.add(first_req);
             it.remove();
 
             while(it.hasNext()) {
                 R next=it.next();
                 if(req_matcher.test(first_req, next)) {
+                    if (next instanceof GmsImpl.Request && ((GmsImpl.Request) next).type == GMS.GmsHeader.LEAVE_REQ) {
+                        log.error("LEAVE: ViewHandler > removeAndProcess(first_req=" + next + ")");
+                    }
                     removed.add(next);
                     it.remove();
                 }

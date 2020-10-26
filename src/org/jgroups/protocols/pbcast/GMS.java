@@ -884,8 +884,10 @@ public class GMS extends Protocol implements DiagnosticsHandler.ProbeHandler {
                     impl.handleJoinResponse(join_rsp);
                 break;
             case GmsHeader.LEAVE_REQ:
+                log.error("LEAVE: GMS > up(msg=" + msg + ")");
                 if(hdr.mbr == null)
                     return null;
+                log.error("LEAVE: GMS > up(mbr=" + hdr.mbr + ")");
                 view_handler.add(new Request(Request.LEAVE, hdr.mbr));
                 break;
             case GmsHeader.LEAVE_RSP:

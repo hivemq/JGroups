@@ -273,12 +273,14 @@ public class TcpConnection extends Connection {
 
 
         public Receiver start() {
+//            new Exception("start").printStackTrace(System.err);
             receiving=true;
             recv.start();
             return this;
         }
 
         public Receiver stop() {
+//            new Exception("stop").printStackTrace(System.err);
             receiving=false;
             return this;
         }
@@ -287,19 +289,31 @@ public class TcpConnection extends Connection {
         public boolean canRun()     {return isRunning() && isConnected();}
         public int     bufferSize() {return buffer != null? buffer.length : 0;}
 
+//        private int c = 0;
+
         public void run() {
             Throwable t=null;
             while(canRun()) {
                 try {
                     int len=in.readInt(); // needed to read messages from TCP_NIO2
+//                    System.err.println("run " + this);
+//                    if (++c % 40 == 0) {
+//                        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+//                        System.err.println("waiting " + this);
+//                        reader.readLine();
+//                        reader.close();
+//                    }
+//                    Thread.sleep(100);
                     server.receive(peer_addr, in, len);
                     updateLastAccessed();
                 }
                 catch(OutOfMemoryError | IOException ignore) {
+//                    ignore.printStackTrace(System.err);
                     t=ignore;
                     break;
                 }
                 catch(Throwable e) {
+//                    e.printStackTrace(System.err);
                 }
             }
             server.notifyConnectionClosed(TcpConnection.this, String.format("%s: %s", getClass().getSimpleName(),
