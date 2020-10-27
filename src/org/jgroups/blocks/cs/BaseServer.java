@@ -265,6 +265,8 @@ public abstract class BaseServer implements Closeable, ConnectionListener {
         Exception connect_exception=null; // set if connect() throws an exception
         sock_creation_lock.lockInterruptibly();
         try {
+            log.error("JGROUPS > BaseServer > getConnection(dest=" + dest + ") > new, thread=" + Thread.currentThread());
+            final long before = System.nanoTime();
             // lock / release, create new conn under sock_creation_lock, it can be skipped but then it takes
             // extra check in conn map and closing the new connection, w/ sock_creation_lock it looks much simpler
             // (slow path, so not important)
@@ -278,6 +280,7 @@ public abstract class BaseServer implements Closeable, ConnectionListener {
                 replaceConnection(dest, conn);
             }
 
+            log.error("JGROUPS > BaseServer > getConnection(dest=" + dest + ") > connect");
             // now connect to dest:
             try {
                 log.trace("%s: connecting to %s", local_addr, dest);
@@ -288,6 +291,8 @@ public abstract class BaseServer implements Closeable, ConnectionListener {
             catch(Exception connect_ex) {
                 connect_exception=connect_ex;
             }
+            final long after = System.nanoTime();
+            log.error("JGROUPS > BaseServer > getConnection(dest=" + dest + ") > finished in " + (after - before));
 
             synchronized(this) {
                 Connection existing_conn=conns.get(dest); // check again after obtaining sock_creation_lock
